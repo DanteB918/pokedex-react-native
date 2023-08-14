@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'red',
+    backgroundColor: '#FF3334',
   },
   heading: {
     fontSize: 24,
