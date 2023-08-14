@@ -1,11 +1,72 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { View, Text, contentContainerStyle, Alert, TextInput, Button, Image, ScrollView, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import * as Font from 'expo-font';
+const showAlert = () =>
+  Alert.alert(
+    'Error',
+    'Pokemon not found',
+    {
+      cancelable: true,
+    },
+  );
 
 export default function App() {
+  const [pokemonData, setPokemonData] = useState(null);
+  const [pokemonName, setPokemonName] = useState('');
+  const [fontLoaded, setFontLoaded] = useState(false);
+  
+  useEffect(() => {
+    async function loadFonts() {
+      await Font.loadAsync({
+        'luckiest-guy': require('./assets/fonts/LuckiestGuy-Regular.ttf'), // Replace with the actual path to the font file
+      });
+      setFontLoaded(true);
+    }
+
+    loadFonts();
+  }, []);
+
+  const fetchPokemon = async () => {
+    try {
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`);
+      const data = await response.json();
+      setPokemonData(data);
+    } catch (error) {
+      showAlert();
+      console.error('Error fetching Pokémon data', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      {fontLoaded ? (
+        <Text style={styles.heading}>Pokémon Info</Text>
+      ) : null}
+      <TextInput
+        style={styles.input}
+        placeholder="Enter Pokémon Name"
+        onChangeText={text => setPokemonName(text)}
+        value={pokemonName}
+      />
+      <Button title="Search" onPress={fetchPokemon} />
+
+      {pokemonData && (
+        <ScrollView contentContainerStyle={styles.pokemonContainer}>
+          <ScrollView contentContainerStyle={styles.pokemonContainer}>
+            <Image style={styles.pokemonImage} source={{ uri: pokemonData.sprites.front_default }} />
+            <Text style={styles.pokemonName}>{pokemonData.name}</Text>
+            <Text style={styles.pokemonType}>Type(s): {pokemonData.types.map(type => type.type.name).join(', ')}</Text>
+            <Text style={styles.pokemonHeight}>Height: {pokemonData.height / 10} m</Text>
+            <Text style={styles.pokemonWeight}>Weight: {pokemonData.weight / 10} kg</Text>
+            <Text style={styles.pokemonAbilities}>Abilities: {pokemonData.abilities.map(ability => ability.ability.name).join(', ')}</Text>
+            <Text style={styles.pokemonSpecies}>Species: {pokemonData.species.name}</Text>
+            <Text style={styles.pokemonBaseExperience}>Base Experience: {pokemonData.base_experience}</Text>
+            <Text style={styles.pokemonGames}>Appears in Games: {pokemonData.game_indices.map(game => game.version.name).join(', ')}</Text>
+          </ScrollView>
+          {/* Other data here */}
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -13,8 +74,75 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'red',
+  },
+  heading: {
+    fontSize: 24,
+    color: '#f39c12',
+    marginBottom: 20,
+  },
+  input: {
+    width: '80%',
+    padding: 10,
+    fontSize: 16,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+  },
+  pokemonContainer: {
+    marginTop: 20,
+    display: 'flex',
+    justifyContent: "center",
+    alignItems: 'center',
+    backgroundColor: '#f2f2f2',
+    padding: 20
+  },
+  pokemonImage: {
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+  },
+  pokemonName: {
+    fontSize: 24,
+    color: '#e74c3c',
+    marginBottom: 10,
+  },
+  pokemonType: {
+    fontSize: 18,
+    color: '#3498db',
+    marginBottom: 10,
+  },
+  pokemonHeight: {
+    fontSize: 18,
+    color: '#e74c3c',
+    marginBottom: 10,
+  },
+  pokemonWeight: {
+    fontSize: 18,
+    color: '#27ae60',
+    marginBottom: 10,
+  },
+  pokemonAbilities: {
+    fontSize: 18,
+    color: '#9b59b6',
+    marginBottom: 10,
+  },
+  pokemonSpecies: {
+    fontSize: 18,
+    color: '#e67e22',
+    marginBottom: 10,
+  },
+  pokemonBaseExperience: {
+    fontSize: 18,
+    color: '#c0392b',
+    marginBottom: 10,
+  },
+  pokemonGames: {
+    fontSize: 18,
+    color: '#f39c12',
+    marginBottom: 10,
   },
 });
