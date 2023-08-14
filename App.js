@@ -95,7 +95,7 @@ export default function App() {
             {pokemonData.base_experience ? (
               <Text style={styles.pokemonBaseExperience}>Base Experience: {pokemonData.base_experience}</Text>
             ) : null}
-            {pokemonData.game_indices ? (
+            {pokemonData.game_indices.map(game => game.version.name).join(', ') ? (
               <Text style={styles.pokemonGames}>Appears in Games: {pokemonData.game_indices.map(game => game.version.name).join(', ')}</Text>
             ) : null}
           </ScrollView>
