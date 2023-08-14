@@ -43,10 +43,12 @@ export default function App() {
     }
   };
   const swapImg = () => { //Swap to shiny image
-    if (pokemonImg == pokemonData.sprites.front_default ){
-      setPokemonImg(pokemonData.sprites.front_shiny);
-    }else {
-      setPokemonImg(pokemonData.sprites.front_default);
+    if ( pokemonData.sprites.front_shiny ){
+      if (pokemonImg == pokemonData.sprites.front_default ){
+        setPokemonImg(pokemonData.sprites.front_shiny);
+      }else {
+        setPokemonImg(pokemonData.sprites.front_default);
+      }
     }
   }
 
