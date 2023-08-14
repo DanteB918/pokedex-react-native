@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { View, TouchableWithoutFeedback, Keyboard, Text, contentContainerStyle, Alert, TextInput, Button, Image, ScrollView, StyleSheet } from 'react-native';
+import { View, SafeAreaView, TouchableWithoutFeedback, Keyboard, Text, contentContainerStyle, Alert, TextInput, Button, Image, ScrollView, StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import * as Font from 'expo-font';
 const showAlert = () =>
@@ -51,7 +51,7 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {fontLoaded ? (
         <Text style={styles.heading}>Pokémon Info</Text>
       ) : null}
@@ -99,7 +99,7 @@ export default function App() {
           </ScrollView>
         </ScrollView>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 
