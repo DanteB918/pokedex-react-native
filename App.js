@@ -1,11 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { View, Text, contentContainerStyle, Alert, TextInput, Button, Image, ScrollView, StyleSheet } from 'react-native';
+import { View, TouchableWithoutFeedback, Keyboard, Text, contentContainerStyle, Alert, TextInput, Button, Image, ScrollView, StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import * as Font from 'expo-font';
 const showAlert = () =>
   Alert.alert(
     'Error',
-    'Pokemon not found',
+    'Pokemon Not Found',
     {
       cancelable: true,
     },
@@ -15,11 +15,12 @@ export default function App() {
   const [pokemonData, setPokemonData] = useState(null);
   const [pokemonName, setPokemonName] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
+  const [pokemonImg, setPokemonImg] = useState(null);
   
   useEffect(() => {
     async function loadFonts() {
       await Font.loadAsync({
-        'luckiest-guy': require('./assets/fonts/LuckiestGuy-Regular.ttf'), // Replace with the actual path to the font file
+        'luckiest-guy': require('./assets/fonts/LuckiestGuy-Regular.ttf'),
       });
       setFontLoaded(true);
     }
@@ -29,14 +30,25 @@ export default function App() {
 
   const fetchPokemon = async () => {
     try {
-      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`);
+      const theName = pokemonName.replace(/ /g, ''); // Remove spaces
+
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${theName.toLowerCase()}`);
       const data = await response.json();
       setPokemonData(data);
+      setPokemonImg(data.sprites.front_default);
+      Keyboard.dismiss();
     } catch (error) {
       showAlert();
-      console.error('Error fetching Pokémon data', error);
+      //console.error('Error fetching Pokémon data', error);
     }
   };
+  const swapImg = () => { //Swap to shiny image
+    if (pokemonImg == pokemonData.sprites.front_default ){
+      setPokemonImg(pokemonData.sprites.front_shiny);
+    }else {
+      setPokemonImg(pokemonData.sprites.front_default);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -49,22 +61,42 @@ export default function App() {
         onChangeText={text => setPokemonName(text)}
         value={pokemonName}
       />
-      <Button title="Search" onPress={fetchPokemon} />
+      <Button title="Search" style={{backgroundColor:'green'}} onPress={fetchPokemon} />
 
       {pokemonData && (
         <ScrollView contentContainerStyle={styles.pokemonContainer}>
           <ScrollView contentContainerStyle={styles.pokemonContainer}>
-            <Image style={styles.pokemonImage} source={{ uri: pokemonData.sprites.front_default }} />
-            <Text style={styles.pokemonName}>{pokemonData.name}</Text>
-            <Text style={styles.pokemonType}>Type(s): {pokemonData.types.map(type => type.type.name).join(', ')}</Text>
-            <Text style={styles.pokemonHeight}>Height: {pokemonData.height / 10} m</Text>
-            <Text style={styles.pokemonWeight}>Weight: {pokemonData.weight / 10} kg</Text>
-            <Text style={styles.pokemonAbilities}>Abilities: {pokemonData.abilities.map(ability => ability.ability.name).join(', ')}</Text>
-            <Text style={styles.pokemonSpecies}>Species: {pokemonData.species.name}</Text>
-            <Text style={styles.pokemonBaseExperience}>Base Experience: {pokemonData.base_experience}</Text>
-            <Text style={styles.pokemonGames}>Appears in Games: {pokemonData.game_indices.map(game => game.version.name).join(', ')}</Text>
+          <Text>Click the image to see the shiny version.</Text>
+            {pokemonImg ? (
+              <TouchableWithoutFeedback onPress={swapImg}>
+                <Image style={styles.pokemonImage} source={{ uri: pokemonImg }} />
+              </TouchableWithoutFeedback>
+            ) : null}
+            {pokemonData.name ? (
+              <Text style={styles.pokemonName}>{pokemonData.name}</Text>
+            ) : null}
+            {pokemonData.types ? (
+              <Text style={styles.pokemonType}>Type(s): {pokemonData.types.map(type => type.type.name).join(', ')}</Text>
+            ) : null}
+            {pokemonData.height ? (
+              <Text style={styles.pokemonHeight}>Height: {pokemonData.height / 10} m</Text>
+            ) : null}
+            {pokemonData.weight ? (
+              <Text style={styles.pokemonWeight}>Weight: {pokemonData.weight / 10} kg</Text>
+            ) : null}
+            {pokemonData.abilities ? (
+              <Text style={styles.pokemonAbilities}>Abilities: {pokemonData.abilities.map(ability => ability.ability.name).join(', ')}</Text>
+            ) : null}
+            {pokemonData.species.name ? (
+              <Text style={styles.pokemonSpecies}>Species: {pokemonData.species.name}</Text>
+            ) : null}
+            {pokemonData.base_experience ? (
+              <Text style={styles.pokemonBaseExperience}>Base Experience: {pokemonData.base_experience}</Text>
+            ) : null}
+            {pokemonData.game_indices ? (
+              <Text style={styles.pokemonGames}>Appears in Games: {pokemonData.game_indices.map(game => game.version.name).join(', ')}</Text>
+            ) : null}
           </ScrollView>
-          {/* Other data here */}
         </ScrollView>
       )}
     </View>
@@ -83,6 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#f39c12',
     marginBottom: 20,
+    fontFamily: 'luckiest-guy'
   },
   input: {
     width: '80%',
@@ -91,6 +124,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 10,
+    backgroundColor: 'white'
   },
   pokemonContainer: {
     marginTop: 20,
