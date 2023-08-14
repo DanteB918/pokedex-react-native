@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { View, SafeAreaView, TouchableWithoutFeedback, Keyboard, Text, contentContainerStyle, Alert, TextInput, Button, Image, ScrollView, StyleSheet } from 'react-native';
+import { View, Linking, SafeAreaView, TouchableWithoutFeedback, Keyboard, Text, contentContainerStyle, Alert, TextInput, Button, Image, ScrollView, StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import * as Font from 'expo-font';
 const showAlert = () =>
@@ -99,6 +99,13 @@ export default function App() {
           </ScrollView>
         </ScrollView>
       )}
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Pokémon are registered trademarks of Nintendo and Game Freak.</Text>
+        <Text style={styles.footerText}>Created by <Text style={styles.link} onPress={() => Linking.openURL('https://www.dantebradshaw.com')}>Dante Bradshaw</Text> | &copy; {new Date().getFullYear()} </Text>
+        <Text style={styles.footerText}>Powered by:</Text>
+        <Image style={styles.footerImg} source={require('./assets/images/pokeapi.png')} />
+        
+      </View>
     </SafeAreaView>
   );
 }
@@ -127,12 +134,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   pokemonContainer: {
-    marginTop: 20,
+    marginTop: 10,
     display: 'flex',
     justifyContent: "center",
     alignItems: 'center',
     backgroundColor: '#f2f2f2',
-    padding: 20
+    padding: 20,
+    paddingTop: 5
   },
   pokemonImage: {
     width: 200,
@@ -179,4 +187,22 @@ const styles = StyleSheet.create({
     color: '#f39c12',
     marginBottom: 10,
   },
+  footer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  footerText: {
+    fontSize: 12,
+    color: '#fff',
+    textAlign: 'center',
+    marginBottom: 5
+  },
+  link: {
+    textDecorationLine: 'underline'
+  },
+  footerImg: {
+    width: 50,
+    height: 30,
+    resizeMode: 'contain',
+  }
 });
