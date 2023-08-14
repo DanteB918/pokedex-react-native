@@ -103,7 +103,9 @@ export default function App() {
         <Text style={styles.footerText}>Pokémon are registered trademarks of Nintendo and Game Freak.</Text>
         <Text style={styles.footerText}>Created by <Text style={styles.link} onPress={() => Linking.openURL('https://www.dantebradshaw.com')}>Dante Bradshaw</Text> | &copy; {new Date().getFullYear()} </Text>
         <Text style={styles.footerText}>Powered by:</Text>
-        <Image style={styles.footerImg} source={require('./assets/images/pokeapi.png')} />
+        <TouchableWithoutFeedback onPress={() => Linking.openURL('https://pokeapi.co')}>
+          <Image style={styles.footerImg} source={require('./assets/images/pokeapi.png')} />
+        </TouchableWithoutFeedback>
         
       </View>
     </SafeAreaView>
