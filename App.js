@@ -61,7 +61,7 @@ export default function App() {
         onChangeText={text => setPokemonName(text)}
         value={pokemonName}
       />
-      <Button title="Search" style={{backgroundColor:'green'}} onPress={fetchPokemon} />
+      <Button title="Search" onPress={fetchPokemon} />
 
       {pokemonData && (
         <ScrollView contentContainerStyle={styles.pokemonContainer}>
